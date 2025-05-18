@@ -1,17 +1,14 @@
-import Dashboard from "../../pages/Dashboard/Dashboard";
-import Sidebar from "../Sidebar/Sidebar";
-import Topbar from "../Topbar/Topbar";
+import React from "react";
+import { Box, CssBaseline } from "@mui/material";
+import { Sidebar, Topbar } from "..";
 
-export default function Layout() {
+export const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="layout">
+    <Box sx={{ display: "flex" }}>
+      <CssBaseline />
+      <Topbar />
       <Sidebar />
-      <div className="main">
-        <Topbar />
-        <div className="content">
-          <Dashboard />
-        </div>
-      </div>
-    </div>
+      {children}
+    </Box>
   );
-}
+};

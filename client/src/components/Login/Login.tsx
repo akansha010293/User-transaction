@@ -9,10 +9,13 @@ import {
   Box,
   Alert,
 } from "@mui/material";
+import type { User } from "../../types";
+import { useAppContext } from "../../hooks/useAppProvider";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [users, setUsers] = useState<string[]>([]);
+  const [username, setUsername] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const { setUser } = useAppContext();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
@@ -21,23 +24,27 @@ export default function LoginPage() {
     axios
       .get("http://localhost:9000/api/users")
       .then((res) => {
-        const userEmails: string[] = res.data.map(
-          (user: { email: string }) => user.email
-        );
-        setUsers(userEmails);
+        setUsers(res.data);
       })
       .catch((err) => console.error("Error fetching users:", err));
   }, []);
 
-  console.log("@@@ users", users);
-
   const handleLogin = () => {
-    if (users.includes(email)) {
+    const hasUsername = username.trim();
+    setError("");
+    setSuccess("");
+    if (!hasUsername) {
+      setError("Please enter a username.");
+      return;
+    }
+    const user = users.find((u) => u.username === username);
+    if (user) {
       setSuccess("Login successfully");
-      setError("");
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
       navigate("/dashboard");
     } else {
-      setError("Email not found.");
+      setError("Username not found.");
     }
   };
 
@@ -51,12 +58,11 @@ export default function LoginPage() {
         {success && <Alert severity="success">{success}</Alert>}
         <TextField
           fullWidth
-          label="Email"
+          label="Username"
           margin="normal"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
-
         <Button variant="contained" fullWidth onClick={handleLogin}>
           Login
         </Button>

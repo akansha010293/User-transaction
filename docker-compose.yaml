@@ -18,6 +18,10 @@ services:
     restart: always
     ports:
       - "5173:5173"
+    volumes:
+      - ./client:/app # Mount local client dir
+      - /app/node_modules # Avoid overwriting node_modules
+    command: npm run dev
 
   backend:
     build: ./server
@@ -29,7 +33,18 @@ services:
     tty: true
     depends_on:
       - db
-    entrypoint: ["./wait-for-it.sh", "db:5432", "--", "npm", "start"]
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    command:
+      [
+        "./wait-for-it.sh",
+        "db:5432",
+        "--",
+        "sh",
+        "-c",
+        "npm run seed && node server.js",
+      ]
     environment:
       DB_HOST: db
       DB_PORT: 5432

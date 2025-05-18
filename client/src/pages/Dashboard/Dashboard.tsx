@@ -1,5 +1,9 @@
-import DashboardTable from "../../components/DashboardTable/DashboardTable";
+import { Layout, ListTransaction } from "../../components";
 
 export default function Dashboard() {
-  return <DashboardTable />;
+  return (
+    <Layout>
+      <ListTransaction />
+    </Layout>
+  );
 }

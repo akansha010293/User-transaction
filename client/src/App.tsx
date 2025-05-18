@@ -1,16 +1,20 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./components/Login/Login";
+import { AppContextProvider } from "./hooks/useAppProvider";
+import CreateTransaction from "./pages/CreateTransaction/CreateTransaction";
 import Dashboard from "./pages/Dashboard/Dashboard";
-import Layout from "./components/Layout/Layout";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/dashboard" element={<Layout />} />
-      </Routes>
-    </Router>
+    <AppContextProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/transaction" element={<CreateTransaction />} />
+        </Routes>
+      </Router>
+    </AppContextProvider>
   );
 }
 
